@@ -3,7 +3,7 @@ module "kontena_node_ignition" {
 
   master_uri  = "wss://TODO-TODO-123.platforms.us-east-1.kontena.cloud"
   grid_token  = "TODOTODOTODOTODO=="
-  docker_opts = "--label provider=gcp --label region=us-east1"
+  docker_opts = "--label provider=gcp --label region=$$REGION --label az=$$ZONE"
 
   dns_server            = "169.254.169.254" # Google's DNS
   overlay_version       = "overlay"         # or overlay2
@@ -23,9 +23,9 @@ data "google_compute_image" "coreos_stable" {
 module "gci_nodes" {
   source = "github.com/matti/terraform-google-compute-instance"
 
-  amount = 3
-  region = "us-east1"
-  name   = "test"
+  amount      = 3
+  region      = "us-east1"
+  name_prefix = "test"
 
   # Can be changed without destroying the disk
   machine_type = "custom-2-2048"
@@ -35,5 +35,5 @@ module "gci_nodes" {
 }
 
 output "ips" {
-  value = "${module.gci_nodes.instance_ips}"
+  value = "${module.gci_nodes.addresses}"
 }
